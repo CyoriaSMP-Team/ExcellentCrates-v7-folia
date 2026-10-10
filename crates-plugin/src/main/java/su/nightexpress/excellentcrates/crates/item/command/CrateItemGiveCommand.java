@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.action.ActionResult;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.command.CrateCommand;
 import su.nightexpress.excellentcrates.api.crate.dispatcher.CrateFeedbackHandler;
@@ -70,11 +71,13 @@ public class CrateItemGiveCommand implements CrateCommand, CrateFeedbackHandler 
 
         ItemStack itemStack = this.itemService.createTaggedItem(crate);
         itemStack.setAmount(amount);
-        Players.addItem(player, itemStack);
-
-        return this.handleFeedbackBase(sender, crate, ActionResult.ok(CrateItemLang.COMMAND_GET_FEEDBACK, ctx -> ctx
-            .with(CommonPlaceholders.GENERIC_AMOUNT, () -> NumberUtil.format(amount))
-            .with(CommonPlaceholders.PLAYER.resolver(player))
-        ));
+        PluginScheduler.runOnEntity(player, () -> {
+            Players.addItem(player, itemStack);
+            this.handleFeedbackBase(sender, crate, ActionResult.ok(CrateItemLang.COMMAND_GET_FEEDBACK, ctx -> ctx
+                .with(CommonPlaceholders.GENERIC_AMOUNT, () -> NumberUtil.format(amount))
+                .with(CommonPlaceholders.PLAYER.resolver(player))
+            ));
+        });
+        return true;
     }
 }

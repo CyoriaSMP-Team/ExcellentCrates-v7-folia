@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.engine.cache.CacheStrategy;
 import su.nightexpress.engine.id.Identifier;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
 import su.nightexpress.excellentcrates.api.key.balance.IKeyBalance;
 import su.nightexpress.excellentcrates.keys.item.KeyItemService;
@@ -92,7 +93,7 @@ public final class KeyBalanceService {
 
         Player player = Players.getPlayer(playerId);
         if (player != null) {
-            return CompletableFuture.completedFuture(this.getKeyBalance(player, key));
+            return PluginScheduler.callOnEntity(player, () -> this.getKeyBalance(player, key));
         }
 
         return this.storageService.loadAndCacheAsync(playerId, keyId, CacheStrategy.TEMPORARY)
@@ -188,7 +189,7 @@ public final class KeyBalanceService {
         else {
             Player player = Players.getPlayer(playerId);
             if (player != null) {
-                return CompletableFuture.completedFuture(this.addKey(player, key, absAmount));
+                return PluginScheduler.callOnEntity(player, () -> this.addKey(player, key, absAmount));
             }
 
             return this.storageService.updateDataAndCreateIfAbsentAsync(playerId, keyId, CacheStrategy.TEMPORARY,
@@ -270,7 +271,7 @@ public final class KeyBalanceService {
         else {
             Player player = Players.getPlayer(playerId);
             if (player != null) {
-                return CompletableFuture.completedFuture(this.removeKey(player, key, amount));
+                return PluginScheduler.callOnEntity(player, () -> this.removeKey(player, key, amount));
             }
 
             return this.storageService.updateDataIfExistsAsync(playerId, keyId, CacheStrategy.TEMPORARY, storedKey -> {

@@ -34,7 +34,11 @@ public class SimpleRollAnimation extends BaseAnimationInstance {
         this.finishTicks = settings.getFinishDelay();
 
         this.rewardLocation = this.adjustLocation(context.location());
-        this.rewardDisplay = this.createDisplay(this.player.getWorld());
+        World world = this.rewardLocation.getWorld();
+        if (world == null) {
+            throw new IllegalStateException("Animation location has no world");
+        }
+        this.rewardDisplay = this.createDisplay(world);
     }
 
     @Override

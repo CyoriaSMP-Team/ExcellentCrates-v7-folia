@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.action.ActionResult;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.command.CrateCommand;
 import su.nightexpress.excellentcrates.api.crate.dispatcher.CrateMessageDispatcher;
@@ -46,7 +47,10 @@ public class AssignCommand implements CrateCommand {
         Player player = context.getPlayerOrThrow();
         Crate crate = arguments.get(ARG_CRATE, Crate.class);
 
-        ActionResult result = this.itemService.assignCrateToBlockInHand(player, crate);
-        return this.dispatcher.handleFeedbackBase(player, crate, result);
+        PluginScheduler.runOnEntity(player, () -> {
+            ActionResult result = this.itemService.assignCrateToBlockInHand(player, crate);
+            this.dispatcher.handleFeedbackBase(player, crate, result);
+        });
+        return true;
     }
 }

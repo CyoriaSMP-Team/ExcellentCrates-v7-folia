@@ -11,6 +11,7 @@ allprojects {
         mavenLocal()
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.nightexpressdev.com/releases")
+        maven("https://jitpack.io")
     }
 }
 
@@ -36,6 +37,7 @@ subprojects {
     dependencies {
         compileOnly("su.nightexpress.nightcore:main:2.16.7")
         compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+        compileOnly("com.github.Anon8281:UniversalScheduler:0.1.7")
     }
 
     if (publishedModules.contains(project.name)) {

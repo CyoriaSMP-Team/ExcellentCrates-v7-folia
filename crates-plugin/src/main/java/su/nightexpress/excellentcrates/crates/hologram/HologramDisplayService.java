@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.block.position.CratePosition;
 import su.nightexpress.excellentcrates.api.crate.block.position.CratePositionRegistry;
@@ -86,7 +87,13 @@ public class HologramDisplayService {
             Location hologramLocation = LocationUtil.setCenter3D(blockLocation)
                 .add(offset.getX(), offset.getY(), offset.getZ());
 
-            this.provider.render(crate, cratePosition, hologramLocation, world, textProvider);
+            PluginScheduler.runOnRegion(hologramLocation, () -> this.provider.render(
+                crate,
+                cratePosition,
+                hologramLocation,
+                world,
+                textProvider
+            ));
         });
     }
 }

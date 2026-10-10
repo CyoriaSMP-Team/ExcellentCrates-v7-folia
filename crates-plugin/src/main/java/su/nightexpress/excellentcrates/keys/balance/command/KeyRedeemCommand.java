@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.action.ActionResult;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
 import su.nightexpress.excellentcrates.api.key.command.KeyCommand;
 import su.nightexpress.excellentcrates.api.key.dispatcher.KeyMessageDispatcher;
@@ -45,6 +46,14 @@ public class KeyRedeemCommand implements KeyCommand {
 
     private boolean run(CommandContext context) {
         Player player = context.getPlayerOrThrow();
+        if (!PluginScheduler.get().isEntityThread(player)) {
+            PluginScheduler.runOnEntity(player, () -> this.redeem(player));
+            return true;
+        }
+        return this.redeem(player);
+    }
+
+    private boolean redeem(Player player) {
         List<CrateKey> unclaimedKeys = new ArrayList<>();
 
         this.keyRegistry.values().forEach(key -> {

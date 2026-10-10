@@ -56,9 +56,21 @@ public abstract class BaseAnimationInstance implements AnimationInstance {
 
     @Override
     public void stop() {
+        if (!this.running) return;
+
         this.running = false;
         this.onStop();
         this.complete();
+    }
+
+    @Override
+    public Player player() {
+        return this.player;
+    }
+
+    @Override
+    public Location location() {
+        return this.location;
     }
 
     @Override

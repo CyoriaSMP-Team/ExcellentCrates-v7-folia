@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.action.ActionResult;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.animation.lang.AnimationsLang;
 import su.nightexpress.excellentcrates.animation.session.AnimationSessionService;
 import su.nightexpress.excellentcrates.api.animation.AnimationContext;
@@ -79,6 +80,10 @@ public class AnimationPlayService {
         Location sourceLocation = pipelineSource == null ? null : pipelineSource.getLocation();
         Location location;
         if (sourceLocation == null) {
+            if (!PluginScheduler.get().isEntityThread(player)) {
+                PluginScheduler.runOnEntity(player, () -> this.playAnimation(player, context, onComplete));
+                return ActionResult.ok();
+            }
             double eyeHeight = player.getEyeLocation().getY();
             Location targetLocation = player.getLocation();
             BlockFace direction = EntityUtil.getDirection(player);

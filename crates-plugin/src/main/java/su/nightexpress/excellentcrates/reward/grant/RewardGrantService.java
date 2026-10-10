@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.registry.TinyRegistry;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.placeholder.CratePlaceholders;
 import su.nightexpress.excellentcrates.api.reward.Reward;
@@ -52,6 +53,11 @@ public class RewardGrantService {
     }
 
     public void giveReward(Player player, Crate crate, Reward reward) {
+        if (!PluginScheduler.get().isEntityThread(player)) {
+            PluginScheduler.runOnEntity(player, () -> this.giveReward(player, crate, reward));
+            return;
+        }
+
         RewardGrantEvent grantEvent = new RewardGrantEvent(player, crate, reward);
         Bukkit.getPluginManager().callEvent(grantEvent);
         if (grantEvent.isCancelled()) {

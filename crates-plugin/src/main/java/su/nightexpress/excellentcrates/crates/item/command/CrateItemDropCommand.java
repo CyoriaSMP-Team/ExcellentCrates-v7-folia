@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.action.ActionResult;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.command.CrateCommand;
 import su.nightexpress.excellentcrates.api.crate.dispatcher.CrateFeedbackHandler;
@@ -83,7 +84,7 @@ public class CrateItemDropCommand implements CrateCommand, CrateFeedbackHandler 
 
     private List<String> getCoords(CommandContext context, Function<Location, Integer> function) {
         Player player = context.getPlayer();
-        if (player == null) return Collections.emptyList();
+        if (player == null || !PluginScheduler.get().isEntityThread(player)) return Collections.emptyList();
 
         Location location = player.getLocation();
         return Lists.newList(String.valueOf(function.apply(location)));
@@ -104,7 +105,7 @@ public class CrateItemDropCommand implements CrateCommand, CrateFeedbackHandler 
         itemStack.setAmount(amount);
 
         Location location = new Location(world, x, y, z);
-        world.dropItemNaturally(location, itemStack);
+        PluginScheduler.runOnRegion(location, () -> world.dropItemNaturally(location, itemStack));
 
         return this.handleFeedbackBase(sender, crate, ActionResult.ok(CrateItemLang.COMMAND_DROP_FEEDBACK, ctx -> ctx
             .with(CommonPlaceholders.GENERIC_AMOUNT, () -> NumberUtil.format(amount))

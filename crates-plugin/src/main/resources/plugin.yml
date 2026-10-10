@@ -3,6 +3,7 @@ version: '${version}'
 name: ExcellentCrates
 author: NightExpress
 desciption: Lightweight, powerful, feature-rich and highly customizable crates plugin.
+folia-supported: true
 depend: [ nightcore ]
 softdepend:
   - PlaceholderAPI

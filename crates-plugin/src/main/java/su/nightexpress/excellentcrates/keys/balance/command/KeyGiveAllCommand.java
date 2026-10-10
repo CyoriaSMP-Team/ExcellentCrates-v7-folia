@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.action.ActionResult;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
 import su.nightexpress.excellentcrates.api.key.command.KeyCommand;
 import su.nightexpress.excellentcrates.api.key.dispatcher.KeyMessageDispatcher;
@@ -63,32 +64,32 @@ public class KeyGiveAllCommand implements KeyCommand {
         CommandSender sender = context.getSender();
 
         int totalGiven = 0;
+        boolean silent = context.hasFlag(FLAG_SILENT);
         for (Player player : Players.getOnline()) {
             if (!player.hasPermission(KeyPerms.COMMAND_GIVE_ALL_INCLUDED)) continue;
 
-            ActionResult result = this.balanceService.addKey(player, key, amount);
-
-            // If adding the key to the player failed, handle the feedback and continue to the next player.
-            if (!result.success()) {
-                result.handleFeedback((locale, actionContext) -> {
-                    this.dispatcher.sendBase(sender, key, locale, ctx -> ctx
-                        .apply(actionContext)
-                        .with(CommonPlaceholders.PLAYER.resolver(player))
-                    );
-                });
-                continue;
-            }
-
-            // If adding the key to the player succeeded, handle the feedback unless the silent flag is set.
-            if (!context.hasFlag(FLAG_SILENT)) {
-                result.handleFeedback((locale, actionContext) -> {
-                    this.dispatcher.sendBase(player, key, KeyLang.KEY_GIVE_NOTIFY, ctx -> ctx
-                        .apply(actionContext)
-                    );
-                });
-            }
-
             totalGiven += amount;
+            PluginScheduler.runOnEntity(player, () -> {
+                ActionResult result = this.balanceService.addKey(player, key, amount);
+
+                if (!result.success()) {
+                    result.handleFeedback((locale, actionContext) -> {
+                        this.dispatcher.sendBase(sender, key, locale, ctx -> ctx
+                            .apply(actionContext)
+                            .with(CommonPlaceholders.PLAYER.resolver(player))
+                        );
+                    });
+                    return;
+                }
+
+                if (!silent) {
+                    result.handleFeedback((locale, actionContext) -> {
+                        this.dispatcher.sendBase(player, key, KeyLang.KEY_GIVE_NOTIFY, ctx -> ctx
+                            .apply(actionContext)
+                        );
+                    });
+                }
+            });
         }
 
         if (!context.hasFlag(FLAG_SILENT_FEEDBACK)) {

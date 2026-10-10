@@ -8,9 +8,13 @@ import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
+
 import su.nightexpress.engine.component.ComponentBundle;
 import su.nightexpress.engine.dispatcher.MessageDispatcher;
 import su.nightexpress.engine.placeholder.PlaceholderAPIResolver;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.service.ServiceRegistry;
 import su.nightexpress.engine.ui.CoreUIService;
 import su.nightexpress.engine.ui.menu.MenuRegistry;
@@ -42,6 +46,8 @@ import su.nightexpress.nightcore.userdata.UserDataManager;
 @NullMarked
 public class ExcellentCratesPlugin extends NightPlugin implements CratesPlugin {
 
+    private static @Nullable TaskScheduler scheduler;
+
     private final ComponentBundle              core          = new ComponentBundle();
     private final List<PlaceholderAPIResolver> papiResolvers = new ArrayList<>();
 
@@ -66,6 +72,31 @@ public class ExcellentCratesPlugin extends NightPlugin implements CratesPlugin {
     @Override
     protected void registerCommands() {
 
+    }
+
+    @Override
+    public void onEnable() {
+        scheduler = UniversalScheduler.getScheduler(this);
+        PluginScheduler.bind(scheduler);
+        super.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        if (scheduler != null) {
+            scheduler.cancelTasks();
+            scheduler = null;
+            PluginScheduler.bind(null);
+        }
+    }
+
+    public static TaskScheduler getTaskScheduler() {
+        TaskScheduler current = scheduler;
+        if (current == null) {
+            throw new IllegalStateException("Task scheduler is not initialized");
+        }
+        return current;
     }
 
     @Override

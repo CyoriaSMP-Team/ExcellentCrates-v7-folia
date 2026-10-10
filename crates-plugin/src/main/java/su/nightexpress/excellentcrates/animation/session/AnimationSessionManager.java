@@ -1,9 +1,9 @@
 package su.nightexpress.excellentcrates.animation.session;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -16,7 +16,7 @@ public class AnimationSessionManager {
     private final Map<UUID, AnimationInstance> sessions;
 
     public AnimationSessionManager() {
-        this.sessions = new HashMap<>();
+        this.sessions = new ConcurrentHashMap<>();
     }
 
     public void purgeStoppedSessions() {

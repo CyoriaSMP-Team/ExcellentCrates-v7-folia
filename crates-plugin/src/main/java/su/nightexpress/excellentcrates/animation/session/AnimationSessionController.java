@@ -2,6 +2,7 @@ package su.nightexpress.excellentcrates.animation.session;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,6 +11,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.component.BaseController;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.animation.AnimationInstance;
 
@@ -46,33 +48,45 @@ public class AnimationSessionController extends BaseController {
         this.sessionManager.purgeStoppedSessions();
 
         for (AnimationInstance session : this.sessionManager.getSessions()) {
-            if (!session.tick()) {
-                session.stop();
-            }
+            this.runOnAnimationRegion(session, () -> {
+                if (!session.isRunning()) return;
+                if (!session.tick()) {
+                    session.stop();
+                }
+            });
         }
     }
 
     private void stopAllSessions() {
         for (AnimationInstance session : this.sessionManager.getSessions()) {
-            session.stop();
+            this.runOnAnimationRegion(session, session::stop);
         }
+    }
 
-        this.sessionManager.purgeStoppedSessions();
+    private void stopSession(Player player) {
+        AnimationInstance session = this.sessionManager.getSession(player.getUniqueId());
+        if (session == null) return;
+
+        UUID playerId = player.getUniqueId();
+        this.runOnAnimationRegion(session, () -> this.sessionManager.stopSession(playerId));
+    }
+
+    private void runOnAnimationRegion(AnimationInstance session, Runnable task) {
+        Location location = session.location();
+        if (location.getWorld() == null) {
+            task.run();
+            return;
+        }
+        PluginScheduler.runOnRegion(location, task);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        UUID playerId = player.getUniqueId();
-
-        this.sessionManager.stopSession(playerId);
+        this.stopSession(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWorldChange(PlayerChangedWorldEvent event) {
-        Player player = event.getPlayer();
-        UUID playerId = player.getUniqueId();
-
-        this.sessionManager.stopSession(playerId);
+        this.stopSession(event.getPlayer());
     }
 }

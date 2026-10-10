@@ -7,14 +7,17 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.jspecify.annotations.NullMarked;
 
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
+
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.nightcore.NightCorePlugin;
-import su.nightexpress.nightcore.util.bukkit.NightTask;
 
 @NullMarked
 public abstract class BaseController extends BasePluginComponent implements Listener {
 
-    protected final NightCorePlugin plugin;
-    protected final List<NightTask> tasks;
+    protected final NightCorePlugin    plugin;
+    protected final List<MyScheduledTask> tasks;
 
     public BaseController(NightCorePlugin plugin) {
         super();
@@ -53,29 +56,35 @@ public abstract class BaseController extends BasePluginComponent implements List
     }
 
     public void stopTasks() {
-        this.tasks.forEach(NightTask::stop);
+        this.tasks.forEach(MyScheduledTask::cancel);
         this.tasks.clear();
     }
 
     protected void addSecondsTask(Runnable runnable, int interval) {
-        this.addTask(NightTask.create(plugin, runnable, interval));
+        this.addRepeatingTask(runnable, PluginScheduler.secondsToTicks(interval), false);
     }
 
     protected void addTickTask(Runnable runnable, long interval) {
-        this.addTask(NightTask.create(plugin, runnable, interval));
+        this.addRepeatingTask(runnable, interval, false);
     }
 
     protected void addAsyncSecondsTask(Runnable runnable, int interval) {
-        this.addTask(NightTask.createAsync(plugin, runnable, interval));
+        this.addRepeatingTask(runnable, PluginScheduler.secondsToTicks(interval), true);
     }
 
     protected void addAsyncTickTask(Runnable runnable, long interval) {
-        this.addTask(NightTask.createAsync(plugin, runnable, interval));
+        this.addRepeatingTask(runnable, interval, true);
     }
 
-    protected void addTask(NightTask task) {
-        if (task.isValid()) {
-            this.tasks.add(task);
-        }
+    private void addRepeatingTask(Runnable runnable, long intervalTicks, boolean async) {
+        if (intervalTicks <= 0L) return;
+
+        TaskScheduler scheduler = PluginScheduler.get();
+        // Folia rejects a non-positive initial delay. One tick still starts on the next cycle.
+        long delay = 1L;
+        MyScheduledTask task = async
+            ? scheduler.runTaskTimerAsynchronously(runnable, delay, intervalTicks)
+            : scheduler.runTaskTimer(runnable, delay, intervalTicks);
+        this.tasks.add(task);
     }
 }

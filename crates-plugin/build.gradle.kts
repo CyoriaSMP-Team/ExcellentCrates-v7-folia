@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":integration-nexo"))
     implementation(project(":integration-packetevents"))
     implementation(project(":integration-papi"))
+    implementation("com.github.Anon8281:UniversalScheduler:0.1.7")
 }
 
 tasks.named<Jar>("jar") {
@@ -26,6 +27,10 @@ tasks.named<ShadowJar>("shadowJar") {
     archiveBaseName.set("ExcellentCrates")
     archiveVersion.set(project.version.toString())
     archiveClassifier.set("")
+    relocate(
+        "com.github.Anon8281.universalScheduler",
+        "su.nightexpress.excellentcrates.universalScheduler"
+    )
 }
 
 tasks {

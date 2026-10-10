@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import su.nightexpress.engine.registry.TinyRegistry;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.event.CratePipelinePreStartEvent;
 import su.nightexpress.excellentcrates.api.crate.pipeline.PipelineChain;
@@ -58,6 +59,11 @@ public class CratePipelineService {
     }
 
     public void startPipeline(Player player, Crate crate, @Nullable Consumer<PipelineContext> consumer) {
+        if (!PluginScheduler.get().isEntityThread(player)) {
+            PluginScheduler.runOnEntity(player, () -> this.startPipeline(player, crate, consumer));
+            return;
+        }
+
         PipelineContext context = new DefaultPipelineContext(crate);
 
         if (consumer != null) {

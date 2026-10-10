@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.component.CrateComponentKeys;
 import su.nightexpress.excellentcrates.api.crate.open.OpenActionsComponent;
@@ -27,6 +28,11 @@ public class CrateOpeningPipelineExecutor implements PipelineExecutor {
 
     @Override
     public void execute(Player player, Crate crate, PipelineContext context) {
+        if (!PluginScheduler.get().isEntityThread(player)) {
+            PluginScheduler.runOnEntity(player, () -> this.execute(player, crate, context));
+            return;
+        }
+
         OpenActionsComponent component = crate.getComponentOrNull(CrateComponentKeys.OPEN_ACTIONS);
         if (component == null || !component.isEnabled()) return;
 
@@ -38,11 +44,12 @@ public class CrateOpeningPipelineExecutor implements PipelineExecutor {
             .andThen(CommonPlaceholders.forPlaceholderAPI(player))
             .build();
 
-        CommandSender console = Bukkit.getConsoleSender();
-
-        for (String command : commands) {
-            String parsedCommand = placeholders.apply(command);
-            Bukkit.dispatchCommand(console, parsedCommand);
-        }
+        List<String> parsedCommands = commands.stream().map(placeholders::apply).toList();
+        PluginScheduler.runGlobal(() -> {
+            CommandSender console = Bukkit.getConsoleSender();
+            for (String parsedCommand : parsedCommands) {
+                Bukkit.dispatchCommand(console, parsedCommand);
+            }
+        });
     }
 }

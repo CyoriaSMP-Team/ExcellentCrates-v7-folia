@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import su.nightexpress.engine.id.Identifier;
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.settings.ReadOnlySettings;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.rarity.reward.RarityComponent;
@@ -61,11 +62,11 @@ public class BroadcastMessageService {
         boolean playSound = message.isPlaySound();
         NightSound sound = message.getSound();
 
-        Players.getOnline().forEach(online -> {
+        Players.getOnline().forEach(online -> PluginScheduler.runOnEntity(online, () -> {
             components.forEach(component -> Players.sendMessage(online, component));
             if (playSound) {
                 sound.play(online);
             }
-        });
+        }));
     }
 }

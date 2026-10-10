@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
 import su.nightexpress.excellentcrates.api.key.command.KeyCommand;
 import su.nightexpress.excellentcrates.api.key.dispatcher.KeyMessageDispatcher;
@@ -76,7 +77,7 @@ public class KeyItemDropCommand implements KeyCommand {
 
     private List<String> getCoords(CommandContext context, Function<Location, Integer> function) {
         Player player = context.getPlayer();
-        if (player == null) return Collections.emptyList();
+        if (player == null || !PluginScheduler.get().isEntityThread(player)) return Collections.emptyList();
 
         Location location = player.getLocation();
         return Lists.newList(String.valueOf(function.apply(location)));
@@ -102,7 +103,7 @@ public class KeyItemDropCommand implements KeyCommand {
         itemStack.setAmount(amount);
 
         Location location = new Location(world, x, y, z);
-        world.dropItemNaturally(location, itemStack);
+        PluginScheduler.runOnRegion(location, () -> world.dropItemNaturally(location, itemStack));
 
         this.dispatcher.sendBase(sender, key, KeyLang.KEY_DROP_FEEDBACK, ctx -> ctx
             .with(CommonPlaceholders.GENERIC_AMOUNT, () -> NumberUtil.format(amount))

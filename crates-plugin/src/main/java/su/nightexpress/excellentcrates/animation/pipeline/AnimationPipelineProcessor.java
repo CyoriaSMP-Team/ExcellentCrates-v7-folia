@@ -1,10 +1,12 @@
 package su.nightexpress.excellentcrates.animation.pipeline;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.animation.AnimationPlayService;
 import su.nightexpress.excellentcrates.api.animation.AnimationRegistry;
 import su.nightexpress.excellentcrates.api.animation.component.AnimationComponent;
@@ -14,6 +16,7 @@ import su.nightexpress.excellentcrates.api.crate.dispatcher.CrateMessageDispatch
 import su.nightexpress.excellentcrates.api.crate.pipeline.PipelineProcessor;
 import su.nightexpress.excellentcrates.api.crate.pipeline.component.AnimationProfileComponent;
 import su.nightexpress.excellentcrates.api.crate.pipeline.component.CrateRewardsPipelineComponent;
+import su.nightexpress.excellentcrates.api.crate.pipeline.component.CrateSourcePipelineComponent;
 import su.nightexpress.excellentcrates.api.crate.pipeline.component.PipelineComponentKeys;
 import su.nightexpress.excellentcrates.api.crate.pipeline.context.PipelineContext;
 import su.nightexpress.nightcore.bridge.key.AdaptedKey;
@@ -63,6 +66,19 @@ public class AnimationPipelineProcessor implements PipelineProcessor {
 
     @Override
     public void process(Player player, PipelineContext context, Runnable onComplete) {
+        CrateSourcePipelineComponent source = context.getComponentOrNull(PipelineComponentKeys.CRATE_SOURCE);
+        Location sourceLocation = source == null ? null : source.getLocation();
+        if (sourceLocation != null && sourceLocation.getWorld() != null) {
+            if (!PluginScheduler.get().isRegionThread(sourceLocation)) {
+                PluginScheduler.runOnRegion(sourceLocation, () -> this.process(player, context, onComplete));
+                return;
+            }
+        }
+        else if (!PluginScheduler.get().isEntityThread(player)) {
+            PluginScheduler.runOnEntity(player, () -> this.process(player, context, onComplete));
+            return;
+        }
+
         Crate crate = context.getCrate();
 
         this.dispatcher.handleFeedbackBase(player, crate, this.playService.playAnimation(player, context, onComplete));
