@@ -9,9 +9,6 @@ public interface BackwardSupport {
     BackwardNavigator backwardNavigator();
 
     default void moveBackward(Player player) {
-        BackwardNavigator navigator = this.backwardNavigator();
-        if (navigator != null) {
-            navigator.moveBack(player);
-        }
+        BackwardNavigator.run(this.backwardNavigator(), player);
     }
 }

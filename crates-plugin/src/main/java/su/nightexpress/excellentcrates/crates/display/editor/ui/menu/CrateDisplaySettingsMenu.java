@@ -15,6 +15,7 @@ import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.engine.scheduler.PluginScheduler;
+import su.nightexpress.engine.ui.menu.BackwardNavigator;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.data.model.CrateDisplay;
@@ -139,7 +140,7 @@ public class CrateDisplaySettingsMenu extends AbstractObjectMenu<CrateDisplaySet
     private void handleBack(ActionContext context) {
         CrateDisplaySettingsMenuContext menuContext = this.getObject(context);
 
-        menuContext.backwardNavigator().moveBack(context.getPlayer());
+        BackwardNavigator.run(menuContext.backwardNavigator(), context.getPlayer());
     }
 
     private void handleName(ActionContext context, CrateDisplay display) {

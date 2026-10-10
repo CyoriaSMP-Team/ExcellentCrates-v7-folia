@@ -96,7 +96,7 @@ public class CrateEditorUIController implements FeedbackHandler {
 
     public void onDeletionDialogConfirm(Player player, Identifier crateId, BackwardNavigator backwardNavigator) {
         if (this.handleFeedback(player, this.editorService.deleteCrate(crateId))) {
-            backwardNavigator.moveBack(player);
+            BackwardNavigator.run(backwardNavigator, player);
         }
     }
 }

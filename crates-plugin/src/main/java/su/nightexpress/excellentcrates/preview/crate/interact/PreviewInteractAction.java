@@ -42,7 +42,7 @@ public class PreviewInteractAction implements InteractAction, FeedbackHandler {
         Player player = context.player();
         Crate crate = context.crate();
 
-        BackwardNavigator navigator = Player::closeInventory;
+        BackwardNavigator navigator = BackwardNavigator.CLOSE_INVENTORY;
         PreviewContext previewContext = new DefaultPreviewContext(crate, navigator);
 
         this.handleFeedback(player, this.viewService.openPreview(player, previewContext));

@@ -38,7 +38,7 @@ public final class EditorCommand implements KeyCommand {
     private boolean run(CommandContext context) {
         Player player = context.getPlayerOrThrow();
 
-        BackwardNavigator navigator = Player::closeInventory;
+        BackwardNavigator navigator = BackwardNavigator.CLOSE_INVENTORY;
         KeyBrowseMenuContext menuContext = new KeyBrowseMenuContext(navigator);
         return this.dispatcher.handleFeedback(player, this.uiService.openKeyListMenu(player, menuContext));
     }
