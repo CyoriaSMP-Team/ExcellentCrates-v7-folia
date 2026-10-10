@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
@@ -169,7 +170,7 @@ public class CrateOpeningSettingsMenu extends AbstractObjectMenu<CrateOpeningSet
         CrateEditorHook hook = menuContext.hook();
 
         if (this.controller.onSettingsMenuStateClick(player, hook, newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
@@ -177,7 +178,7 @@ public class CrateOpeningSettingsMenu extends AbstractObjectMenu<CrateOpeningSet
         Player player = context.getPlayer();
         CrateOpeningSettingsMenuContext menuContext = this.getObject(context);
         CrateEditorHook hook = menuContext.hook();
-        Runnable refresh = () -> this.refresh(player);
+        Runnable refresh = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onSettingsMenuCommandsClick(player, hook, currentCommands, refresh);
     }

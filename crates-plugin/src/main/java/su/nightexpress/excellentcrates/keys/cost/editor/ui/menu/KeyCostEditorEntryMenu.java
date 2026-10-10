@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
@@ -153,7 +155,7 @@ public class KeyCostEditorEntryMenu extends AbstractObjectMenu<KeyCostEntryMenuC
         Identifier keyId = menuContext.keyId();
         CrateEditorHook hook = menuContext.hook();
 
-        Runnable refreshUI = () -> context.getViewer().refresh();
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
 
         this.controller.onEntryMenuAmountClick(player, crate, hook, keyId, currentAmount, refreshUI);
     }

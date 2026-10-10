@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.common.cooldown.CooldownSnapshot;
@@ -165,7 +166,7 @@ public class CrateCooldownsMenu extends AbstractObjectMenu<CrateCooldownsMenuCon
         CrateCooldownsMenuContext menuContext = this.getObject(context);
         CrateEditorHook hook = menuContext.hook();
 
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onCooldownsMenuCooldownClick(player, type, snapshot, hook, refreshUI);
     }

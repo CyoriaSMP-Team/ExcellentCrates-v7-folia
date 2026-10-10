@@ -11,8 +11,8 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import su.nightexpress.engine.registry.TinyRegistry;
 import su.nightexpress.engine.scheduler.PluginScheduler;
+import su.nightexpress.engine.registry.TinyRegistry;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.event.CratePipelinePreStartEvent;
 import su.nightexpress.excellentcrates.api.crate.pipeline.PipelineChain;

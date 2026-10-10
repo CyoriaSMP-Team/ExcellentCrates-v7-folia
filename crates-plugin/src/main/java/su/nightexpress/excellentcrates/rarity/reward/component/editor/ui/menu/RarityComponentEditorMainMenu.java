@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.rarity.Rarity;
@@ -178,7 +179,7 @@ public class RarityComponentEditorMainMenu extends AbstractObjectMenu<RarityComp
         RewardEditorHook hook = menuContext.hook();
 
         if (this.uiController.onMainMenuStateClick(player, reward, hook, newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
@@ -189,7 +190,7 @@ public class RarityComponentEditorMainMenu extends AbstractObjectMenu<RarityComp
         if (reward == null) return;
 
         RewardEditorHook hook = menuContext.hook();
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.uiController.onComponentMenuRarityClick(player, reward, hook, currentKey, refreshUI);
     }

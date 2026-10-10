@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
-import su.nightexpress.engine.registry.TinyRegistry;
 import su.nightexpress.engine.scheduler.PluginScheduler;
+import su.nightexpress.engine.registry.TinyRegistry;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.placeholder.CratePlaceholders;
 import su.nightexpress.excellentcrates.api.reward.Reward;

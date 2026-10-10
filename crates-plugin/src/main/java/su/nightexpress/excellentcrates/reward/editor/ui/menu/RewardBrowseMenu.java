@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.component.CrateComponentKeys;
@@ -136,7 +138,7 @@ public class RewardBrowseMenu extends AbstractObjectMenu<RewardBrowseMenuContext
             RewardComponentHook hook = menuContext.hook();
 
             if (this.controller.onBrowseMenuFastCreateClick(player, hook, crate, new ItemStack(itemStack))) {
-                context.getViewer().refresh(); // Refresh on successful creation only.
+                PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh()); // Refresh on successful creation only.
             }
         }
     }
@@ -217,7 +219,7 @@ public class RewardBrowseMenu extends AbstractObjectMenu<RewardBrowseMenuContext
 
         boolean quickMode = menuContext.quickMode().get();
         menuContext.quickMode().set(!quickMode);
-        context.getViewer().refresh();
+        PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
     }
 
     private void handleCreation(ActionContext context) {
@@ -229,12 +231,13 @@ public class RewardBrowseMenu extends AbstractObjectMenu<RewardBrowseMenuContext
         RewardBrowseMenuContext menuContext = this.getObject(context);
 
         ItemStack copy = new ItemStack(cursor);
-        event.getView().setCursor(null);
-
         Player player = context.getPlayer();
-        Players.addItem(player, copy);
+        PluginScheduler.runOnEntity(player, () -> {
+            event.getView().setCursor(null);
+            Players.addItem(player, copy);
+        });
 
-        Runnable refreshUI = () -> context.getViewer().refresh();
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
 
         this.controller.onBrowseMenuManualCreationClick(player, menuContext, copy, refreshUI);
     }

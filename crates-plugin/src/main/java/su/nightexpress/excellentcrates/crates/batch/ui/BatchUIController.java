@@ -3,8 +3,10 @@ package su.nightexpress.excellentcrates.crates.batch.ui;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.entity.Player;
+
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.action.ProcessCallback;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.crate.Crate;
@@ -49,7 +51,7 @@ public class BatchUIController implements BatchSelectionHandler {
                     }
 
                     isChosen.set(true);
-                    player.closeInventory();
+                    PluginScheduler.runOnEntity(player, player::closeInventory);
 
                     callback.proceed(selectedAmount);
                 }))

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.entity.Player;
+
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.engine.action.ProcessCallback;
 import su.nightexpress.excellentcrates.api.crate.Crate;
@@ -52,7 +54,7 @@ public class SelectiveUIController {
                 }
 
                 isCompleted.set(true);
-                player.closeInventory();
+                PluginScheduler.runOnEntity(player, player::closeInventory);
 
                 callback.proceed(pick);
             });

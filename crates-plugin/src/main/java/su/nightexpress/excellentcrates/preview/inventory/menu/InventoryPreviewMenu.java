@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.bukkit.entity.Player;
+
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
@@ -231,6 +233,6 @@ public class InventoryPreviewMenu extends AbstractObjectMenu<InventoryMenuContex
     }
 
     private void closeMenu(ActionContext context) {
-        context.getPlayer().closeInventory();
+        PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getPlayer().closeInventory());
     }
 }

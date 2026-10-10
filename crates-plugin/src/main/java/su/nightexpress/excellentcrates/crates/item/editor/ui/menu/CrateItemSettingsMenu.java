@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.data.model.CrateItem;
@@ -227,13 +229,13 @@ public class CrateItemSettingsMenu extends AbstractObjectMenu<CrateItemSettingsM
 
     private void handleItemReceive(ActionContext context, ItemStack itemStack) {
         Player player = context.getPlayer();
-        Players.addItem(player, itemStack);
+        PluginScheduler.runOnEntity(player, () -> Players.addItem(player, itemStack));
     }
 
     private void handleItem(ViewerContext context, ItemStack itemStack) {
         Player player = context.getPlayer();
         CrateItemSettingsMenuContext menuContext = this.getObject(context);
-        Runnable refreshUI = () -> context.getViewer().refresh();
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
 
         this.controller.onItemMenuIconClick(player, menuContext, itemStack, refreshUI);
     }
@@ -243,7 +245,7 @@ public class CrateItemSettingsMenu extends AbstractObjectMenu<CrateItemSettingsM
         CrateItemSettingsMenuContext menuContext = this.getObject(context);
 
         this.controller.onItemMenuStackableClick(player, menuContext, state);
-        context.getViewer().refresh();
+        PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
     }
 
     private void handleUseDisplay(ActionContext context, boolean state) {
@@ -251,6 +253,6 @@ public class CrateItemSettingsMenu extends AbstractObjectMenu<CrateItemSettingsM
         CrateItemSettingsMenuContext menuContext = this.getObject(context);
 
         this.controller.onItemMenuUseDisplayClick(player, menuContext, state);
-        context.getViewer().refresh();
+        PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
     }
 }

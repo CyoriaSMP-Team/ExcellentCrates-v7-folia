@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.data.model.CrateDisplay;
@@ -143,7 +145,7 @@ public class CrateDisplaySettingsMenu extends AbstractObjectMenu<CrateDisplaySet
     private void handleName(ActionContext context, CrateDisplay display) {
         Player player = context.getPlayer();
         CrateDisplaySettingsMenuContext menuContext = this.getObject(context);
-        Runnable refreshUI = () -> context.getViewer().refresh();
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
 
         this.controller.onSettingsMenuNameClick(player, menuContext, display, refreshUI);
     }
@@ -151,7 +153,7 @@ public class CrateDisplaySettingsMenu extends AbstractObjectMenu<CrateDisplaySet
     private void handleLore(ActionContext context, CrateDisplay display) {
         Player player = context.getPlayer();
         CrateDisplaySettingsMenuContext menuContext = this.getObject(context);
-        Runnable refreshUI = () -> context.getViewer().refresh();
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
 
         this.controller.onSettingsMenuLoreClick(player, menuContext, display, refreshUI);
     }

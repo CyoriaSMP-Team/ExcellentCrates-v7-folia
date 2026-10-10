@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.common.cooldown.CooldownSnapshot;
 import su.nightexpress.excellentcrates.api.common.cooldown.CooldownType;
@@ -156,7 +157,7 @@ public class RewardCooldownsMenu extends AbstractObjectMenu<RewardCooldownsMenuC
     private void handleCooldownClick(ActionContext context, CooldownType type, CooldownSnapshot snapshot) {
         Player player = context.getPlayer();
         RewardCooldownsMenuContext menuContext = this.getObject(context);
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onCooldownsMenuCooldownClick(player, menuContext, type, snapshot, refreshUI);
     }

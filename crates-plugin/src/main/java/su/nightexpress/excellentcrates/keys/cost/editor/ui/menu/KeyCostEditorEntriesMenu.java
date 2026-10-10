@@ -16,6 +16,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
@@ -225,7 +226,7 @@ public class KeyCostEditorEntriesMenu extends AbstractObjectMenu<KeyCostEntriesM
         if (crate == null) return;
 
         if (this.controller.onEntriesMenuCostEnabledClick(player, crate, menuContext.hook(), newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
@@ -236,12 +237,12 @@ public class KeyCostEditorEntriesMenu extends AbstractObjectMenu<KeyCostEntriesM
         if (crate == null) return;
 
         if (existingKeys.containsAll(this.keyRegistry.keys()) || this.keyRegistry.values().isEmpty()) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
             return;
         }
 
         this.controller.onEntriesMenuAddClick(player, crate, menuContext.hook(), existingKeys, () -> {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         });
     }
 

@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.animation.component.editor.ui.AnimationComponentEditorUIController;
 import su.nightexpress.excellentcrates.animation.component.editor.ui.menu.context.AnimationComponentMenuContext;
 import su.nightexpress.excellentcrates.animation.lang.AnimationsLang;
@@ -178,7 +179,7 @@ public class AnimationComponentMenu extends AbstractObjectMenu<AnimationComponen
         CrateEditorHook hook = menuContext.hook();
 
         if (this.controller.onComponentMenuStateClick(player, crate, hook, newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
@@ -190,7 +191,7 @@ public class AnimationComponentMenu extends AbstractObjectMenu<AnimationComponen
 
         CrateEditorHook hook = menuContext.hook();
 
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onComponentMenuAnimationClick(player, crate, hook, currentKey, refreshUI);
     }

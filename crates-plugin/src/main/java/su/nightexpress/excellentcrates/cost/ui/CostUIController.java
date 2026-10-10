@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.entity.Player;
+
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.engine.action.ProcessCallback;
 import su.nightexpress.engine.id.IdentifiableRegistry;
@@ -198,7 +200,7 @@ public class CostUIController implements CostSelectionHandler, CrateFeedbackHand
                 }
 
                 isChosen.set(true);
-                player.closeInventory();
+                PluginScheduler.runOnEntity(player, player::closeInventory);
 
                 callback.proceed(new DefaultCostTypeOption(selectedTypeId, selectedOptionId));
             }

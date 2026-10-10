@@ -3,8 +3,8 @@ package su.nightexpress.excellentcrates.crates.block.command;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
-import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.engine.scheduler.PluginScheduler;
+import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.command.CrateCommand;
 import su.nightexpress.excellentcrates.api.crate.dispatcher.CrateMessageDispatcher;

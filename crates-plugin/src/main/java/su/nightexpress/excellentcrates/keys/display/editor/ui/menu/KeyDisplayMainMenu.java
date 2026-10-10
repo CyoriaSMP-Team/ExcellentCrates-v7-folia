@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
 import su.nightexpress.excellentcrates.api.key.data.model.KeyDisplay;
@@ -141,7 +142,7 @@ public class KeyDisplayMainMenu extends AbstractObjectMenu<KeyDisplayMainMenuCon
         Player player = context.getPlayer();
         KeyDisplayMainMenuContext menuContext = this.getObject(context);
         KeyEditorHook hook = menuContext.hook();
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onDisplayMenuNameClick(player, hook, currentName, refreshUI);
     }
@@ -150,7 +151,7 @@ public class KeyDisplayMainMenu extends AbstractObjectMenu<KeyDisplayMainMenuCon
         Player player = context.getPlayer();
         KeyDisplayMainMenuContext menuContext = this.getObject(context);
         KeyEditorHook hook = menuContext.hook();
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onDisplayMenuLoreClick(player, hook, currentLore, refreshUI);
     }

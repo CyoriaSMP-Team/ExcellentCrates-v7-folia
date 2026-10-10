@@ -11,10 +11,10 @@ import org.jspecify.annotations.Nullable;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.component.ComponentBundle;
 import su.nightexpress.engine.dispatcher.MessageDispatcher;
 import su.nightexpress.engine.placeholder.PlaceholderAPIResolver;
-import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.service.ServiceRegistry;
 import su.nightexpress.engine.ui.CoreUIService;
 import su.nightexpress.engine.ui.menu.MenuRegistry;

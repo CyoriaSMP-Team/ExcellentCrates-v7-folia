@@ -1,8 +1,10 @@
 package su.nightexpress.excellentcrates.crates.editor.command;
 
 import org.bukkit.entity.Player;
+
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.dispatcher.MessageDispatcher;
 import su.nightexpress.engine.ui.menu.BackwardNavigator;
 import su.nightexpress.excellentcrates.api.crate.command.CrateCommand;
@@ -37,7 +39,7 @@ public class CrateEditorCommandExtension implements CrateCommand {
 
     private boolean run(CommandContext context) {
         Player player = context.getPlayerOrThrow();
-        BackwardNavigator navigator = user -> user.closeInventory();
+        BackwardNavigator navigator = user -> PluginScheduler.runOnEntity(user, user::closeInventory);
         CrateBrowseMenuContext menuContext = new CrateBrowseMenuContext(navigator);
 
         return this.uiService.openCrateBrowseMenu(player, menuContext).handleFeedback((locale, ctx) -> {

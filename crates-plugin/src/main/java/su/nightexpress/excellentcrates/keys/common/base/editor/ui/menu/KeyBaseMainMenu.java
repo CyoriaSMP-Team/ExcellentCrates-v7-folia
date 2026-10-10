@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
 import su.nightexpress.excellentcrates.api.key.data.model.KeyBase;
@@ -135,7 +136,7 @@ public class KeyBaseMainMenu extends AbstractObjectMenu<KeyBaseMainMenuContext> 
         KeyEditorHook hook = menuContext.hook();
 
         if (this.controller.onBaseVirtualClick(player, hook, state)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 }

@@ -10,8 +10,8 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jspecify.annotations.NullMarked;
 
-import su.nightexpress.engine.component.BaseController;
 import su.nightexpress.engine.scheduler.PluginScheduler;
+import su.nightexpress.engine.component.BaseController;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.animation.AnimationInstance;
 

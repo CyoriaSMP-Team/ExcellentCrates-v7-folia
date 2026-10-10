@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.reward.Reward;
 import su.nightexpress.excellentcrates.api.reward.component.RewardComponentKeys;
@@ -103,7 +104,7 @@ public class RewardItemsMenu extends AbstractObjectMenu<RewardItemsMenuContext> 
             if (itemStack == null || itemStack.getType().isAir()) return;
 
             Player player = context.getPlayer();
-            Runnable refreshUI = () -> this.refresh(player);
+            Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
             this.uiController.onItemsItemClick(player, reward, hook, new ItemStack(itemStack), refreshUI);
         }
@@ -206,7 +207,7 @@ public class RewardItemsMenu extends AbstractObjectMenu<RewardItemsMenuContext> 
         RewardEditorHook hook = menuContext.hook();
 
         this.uiController.onItemsItemRemoveClick(player, reward, hook, index, () -> {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         });
     }
 }

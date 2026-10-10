@@ -14,6 +14,7 @@ import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.text.layout.TextLayout;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
@@ -270,7 +271,7 @@ public class RewardSelectionMenu extends AbstractObjectMenu<RewardSelectionMenuC
 
         if (this.uiController.onSelectionRewardPick(player, crate, reward, pickContext)) {
             this.settings.pickSound().play(player);
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
@@ -288,7 +289,7 @@ public class RewardSelectionMenu extends AbstractObjectMenu<RewardSelectionMenuC
 
         if (this.uiController.onSelectionRewardUnpick(player, crate, reward, pickContext)) {
             this.settings.unpickSound().play(player);
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 

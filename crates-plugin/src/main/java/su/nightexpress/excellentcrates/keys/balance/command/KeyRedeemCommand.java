@@ -6,8 +6,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
-import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.engine.scheduler.PluginScheduler;
+import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
 import su.nightexpress.excellentcrates.api.key.command.KeyCommand;
 import su.nightexpress.excellentcrates.api.key.dispatcher.KeyMessageDispatcher;

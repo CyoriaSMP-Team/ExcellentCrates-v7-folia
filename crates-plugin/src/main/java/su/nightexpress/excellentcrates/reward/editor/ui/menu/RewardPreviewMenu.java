@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.reward.Reward;
 import su.nightexpress.excellentcrates.api.reward.data.model.RewardPreview;
@@ -72,7 +74,7 @@ public class RewardPreviewMenu extends AbstractObjectMenu<RewardPreviewMenuConte
             Player player = context.getPlayer();
 
             if (this.controller.onPreviewMenuIconClick(player, reward, itemStack)) {
-                context.getViewer().refresh(); // Refresh on successful replacement only.
+                PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh()); // Refresh on successful replacement only.
             }
         }
     }
@@ -212,7 +214,7 @@ public class RewardPreviewMenu extends AbstractObjectMenu<RewardPreviewMenuConte
 
         Player player = context.getPlayer();
         RewardPreview preview = reward.getPreview();
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onPreviewMenuNameClick(player, reward, preview, refreshUI);
     }
@@ -226,7 +228,7 @@ public class RewardPreviewMenu extends AbstractObjectMenu<RewardPreviewMenuConte
 
         Player player = context.getPlayer();
         RewardPreview preview = reward.getPreview();
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onPreviewMenuLoreClick(player, reward, preview, refreshUI);
     }
@@ -243,7 +245,7 @@ public class RewardPreviewMenu extends AbstractObjectMenu<RewardPreviewMenuConte
         boolean newState = !preview.isInheritFromIcon();
 
         if (this.controller.onPreviewMenuAutoResolveClick(player, reward, newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 }

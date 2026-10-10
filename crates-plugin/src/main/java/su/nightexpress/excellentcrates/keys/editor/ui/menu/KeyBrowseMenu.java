@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.id.Identifier;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.key.CrateKey;
@@ -175,14 +177,14 @@ public class KeyBrowseMenu extends AbstractObjectMenu<KeyBrowseMenuContext> {
 
     private void handleManualCreation(ActionContext context) {
         Player player = context.getPlayer();
-        Runnable refreshUI = () -> context.getViewer().refresh();
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
 
         this.controller.onManualCreationClick(player, refreshUI);
     }
 
     private void handleAutomaticCreation(ViewerContext context, ItemStack itemStack) {
         Player player = context.getPlayer();
-        Runnable refreshUI = () -> context.getViewer().refresh();
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(context.getPlayer(), () -> context.getViewer().refresh());
 
         this.controller.onAutomaticCreationClick(player, itemStack, refreshUI);
     }

@@ -16,6 +16,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.reward.Reward;
 import su.nightexpress.excellentcrates.api.reward.commands.RewardCommandExecutionMode;
@@ -233,7 +234,7 @@ public class RewardCommandsMenu extends AbstractObjectMenu<RewardCommandsMenuCon
         RewardId rewardId = menuContext.rewardId();
         boolean supportsWeight = content.isWeightEffective();
         RewardEditorHook hook = menuContext.hook();
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         IntStream.range(0, ITEM_SLOTS.length).forEach(index -> {
             RewardCommandPool bundle = index < bundles.size() ? bundles.get(index) : null;
@@ -304,7 +305,7 @@ public class RewardCommandsMenu extends AbstractObjectMenu<RewardCommandsMenuCon
         if (commandContent == null) return;
 
         boolean supportsWeight = commandContent.isWeightEffective();
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         RewardCommandPool newBundle = StandrdRewardCommandPool.createDefault();
 
@@ -328,7 +329,7 @@ public class RewardCommandsMenu extends AbstractObjectMenu<RewardCommandsMenuCon
         boolean newState = !commandContent.isEnabled();
 
         if (this.controller.onCommandsMenuStateClick(player, menuContext.hook(), newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
@@ -346,7 +347,7 @@ public class RewardCommandsMenu extends AbstractObjectMenu<RewardCommandsMenuCon
 
         int currentIterations = commandContent.getIterations();
 
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onCommandsMenuIterationsClick(player, rewardId, currentIterations, hook, refreshUI);
     }
@@ -365,7 +366,7 @@ public class RewardCommandsMenu extends AbstractObjectMenu<RewardCommandsMenuCon
 
         RewardCommandExecutionMode currentMode = commandContent.getGiveMode();
 
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onCommandsMenuGiveModeClick(player, rewardId, currentMode, hook, refreshUI);
     }

@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.crate.Crate;
 import su.nightexpress.excellentcrates.api.crate.component.CrateComponentKeys;
@@ -147,7 +148,7 @@ public class RewardComponentSettingsMenu extends AbstractObjectMenu<RewardCompon
     private void handleRollCount(ActionContext context, int current) {
         Player player = context.getPlayer();
         RewardComponentSettingsMenuContext menuContext = this.getObject(context);
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onSettingsRollCountClick(player, menuContext, current, refreshUI);
     }

@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.CratesPlugin;
 import su.nightexpress.excellentcrates.api.reward.Reward;
 import su.nightexpress.excellentcrates.api.reward.broadcast.RewardBroadcastComponent;
@@ -146,7 +147,7 @@ public class BroadcastSettingsMenu extends AbstractObjectMenu<BroadcastSettingsM
         RewardEditorHook hook = menuContext.hook();
 
         if (this.controller.onBaseMenuWinBroadcastClick(player, reward, hook, newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 }

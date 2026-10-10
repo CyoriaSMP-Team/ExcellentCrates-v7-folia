@@ -9,6 +9,7 @@ import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.engine.ui.menu.MenuKey;
 import su.nightexpress.engine.ui.menu.MenuRegistry;
@@ -55,6 +56,15 @@ public class DefaultMenuRegistry implements MenuRegistry {
             return ActionResult.fail(Lang.CORE_UI_ERROR_MENU_NOT_FOUND, ctx -> ctx
                 .with(CommonPlaceholders.GENERIC_VALUE, () -> key.id().value())
             );
+        }
+
+        if (!PluginScheduler.get().isEntityThread(player)) {
+            PluginScheduler.runOnEntity(player, () -> {
+                if (!menu.show(player, context)) {
+                    LOGGER.warn("Menu '{}' could not be opened for {}.", key.id(), player.getName());
+                }
+            });
+            return ActionResult.ok();
         }
 
         return ActionResult.of(menu.show(player, context));

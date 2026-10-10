@@ -3,7 +3,10 @@ package su.nightexpress.excellentcrates.core.ui;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.engine.action.ActionResult;
 import su.nightexpress.engine.ui.CoreUIService;
 import su.nightexpress.engine.ui.menu.MenuKey;
@@ -17,6 +20,8 @@ import su.nightexpress.nightcore.util.placeholder.CommonPlaceholders;
 
 @NullMarked
 public class DefaultCoreUIService implements CoreUIService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCoreUIService.class);
 
     private final MenuRegistry   menus;
     private final DialogRegistry dialogs;
@@ -48,6 +53,16 @@ public class DefaultCoreUIService implements CoreUIService {
 
     @Override
     public <T> ActionResult showDialog(Player player, DialogKey<T> key, T context, @Nullable Runnable callback) {
+        if (!PluginScheduler.get().isEntityThread(player)) {
+            PluginScheduler.runOnEntity(player, () -> {
+                ActionResult result = this.showDialog(player, key, context, callback);
+                if (result.failure()) {
+                    LOGGER.warn("Dialog '{}' could not be opened for {}.", key.id(), player.getName());
+                }
+            });
+            return ActionResult.ok();
+        }
+
         if (!this.dialogs.show(player, key, context, callback)) {
             return ActionResult.fail(Lang.CORE_UI_ERROR_DIALOG_NOT_FOUND, ctx -> ctx
                 .with(CommonPlaceholders.GENERIC_VALUE, key::id)

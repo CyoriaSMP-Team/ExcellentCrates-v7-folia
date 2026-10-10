@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jspecify.annotations.NullMarked;
 
+import su.nightexpress.engine.scheduler.PluginScheduler;
 import su.nightexpress.excellentcrates.api.common.limit.LimitSnapshot;
 import su.nightexpress.excellentcrates.api.common.limit.LimitType;
 import su.nightexpress.excellentcrates.api.reward.Reward;
@@ -261,7 +262,7 @@ public class RewardLimitsMainMenu extends AbstractObjectMenu<RewardLimitsMainMen
         RewardEditorHook hook = menuContext.hook();
 
         if (this.controller.onLimitsMenuStateClick(player, hook, newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
@@ -271,7 +272,7 @@ public class RewardLimitsMainMenu extends AbstractObjectMenu<RewardLimitsMainMen
         RewardLimitsMainMenuContext menuContext = this.getObject(context);
         RewardEditorHook hook = menuContext.hook();
 
-        Runnable refreshUI = () -> this.refresh(player);
+        Runnable refreshUI = () -> PluginScheduler.runOnEntity(player, () -> this.refresh(player));
 
         this.controller.onLimitsMenuLimitClick(player, hook, type, snapshot, refreshUI);
     }
@@ -283,7 +284,7 @@ public class RewardLimitsMainMenu extends AbstractObjectMenu<RewardLimitsMainMen
         RewardEditorHook hook = menuContext.hook();
 
         if (this.controller.onLimitsMenuAlternativeStateClick(player, hook, newState)) {
-            this.refresh(player);
+            PluginScheduler.runOnEntity(player, () -> this.refresh(player));
         }
     }
 
