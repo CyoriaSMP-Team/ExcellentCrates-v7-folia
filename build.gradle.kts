@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = "su.nightexpress.excellentcrates"
-    version = "7.1.0"
+    version = "7.1.0-folia.26.2.1"
 
     repositories {
         mavenLocal()
@@ -36,7 +36,7 @@ subprojects {
 
     dependencies {
         compileOnly("su.nightexpress.nightcore:main:2.16.7")
-        compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+        compileOnly("io.papermc.paper:paper-api:26.2.build.+")
         compileOnly("com.github.Anon8281:UniversalScheduler:0.1.7")
     }
 
